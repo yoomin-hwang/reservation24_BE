@@ -68,15 +68,15 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable Long id) {
+    @GetMapping("/{boardId}")
+    public ResponseEntity<ReservationResponseDTO> getReservationById(@PathVariable("boardId") Long id) {
         Optional<Reservation> reservationOptional = reservationService.getReservationById(id);
         return reservationOptional.map(reservation -> ResponseEntity.ok(convertToDTO(reservation)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> cancelReservation(@PathVariable("boardId") Long id) {
         reservationService.cancelReservation(id);
         return ResponseEntity.noContent().build();
     }
