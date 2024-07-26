@@ -12,7 +12,7 @@ public class ReservationResponseDTO {
     private Long id;
     private String userName;
     private String userFaculty;
-    private Long roomId;
+    private String roomName;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
