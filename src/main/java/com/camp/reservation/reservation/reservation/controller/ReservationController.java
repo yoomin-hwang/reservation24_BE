@@ -86,7 +86,7 @@ public class ReservationController {
         dto.setId(reservation.getId());
         dto.setUserName(reservation.getUserName());
         dto.setUserFaculty(reservation.getUserFaculty());
-        dto.setRoomId(reservation.getRoom().getId());
+        dto.setRoomName(reservation.getRoom().getName());
         dto.setDate(reservation.getDate());
         dto.setStartTime(reservation.getStartTime());
         dto.setEndTime(reservation.getEndTime());
