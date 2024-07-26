@@ -27,6 +27,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponseDTO> createReservation(@RequestBody ReservationRequestDTO requestDTO) {
+        System.out.println(requestDTO.toString());
         Optional<Room> roomOptional = roomRepository.findById(requestDTO.getRoomId());
 
         if (roomOptional.isEmpty()) {
