@@ -2,6 +2,7 @@ package com.camp.reservation.reservation.reservation.service;
 
 import com.camp.reservation.reservation.reservation.entity.Reservation;
 import com.camp.reservation.reservation.reservation.repository.ReservationRepository;
+import com.camp.reservation.reservation.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final RoomService roomService;
 
     public Reservation createReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
+        Reservation savedReservation = reservationRepository.save(reservation);
+        roomService.updateRoomAvailability(reservation.getRoom(), reservation.getDate(), reservation.getStartTime(), reservation.getEndTime());
+        return savedReservation;
     }
 
     public Optional<Reservation> getReservationById(Long id) {
@@ -26,6 +30,11 @@ public class ReservationService {
     }
 
     public void cancelReservation(Long id) {
-        reservationRepository.deleteById(id);
+        Optional<Reservation> reservationOptional = reservationRepository.findById(id);
+        if (reservationOptional.isPresent()) {
+            Reservation reservation = reservationOptional.get();
+            roomService.updateRoomAvailability(reservation.getRoom(), reservation.getDate(), reservation.getStartTime(), reservation.getEndTime());
+            reservationRepository.deleteById(id);
+        }
     }
 }

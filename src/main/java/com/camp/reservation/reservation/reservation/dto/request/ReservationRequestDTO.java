@@ -9,7 +9,8 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class ReservationRequestDTO {
-    private Long userId;
+    private String userName;
+    private String userFaculty;
     private Long roomId;
     private LocalDate date;
     private LocalTime startTime;

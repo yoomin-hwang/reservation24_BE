@@ -1,6 +1,6 @@
 package com.camp.reservation.reservation.reservation.entity;
 
-import com.camp.reservation.reservation.user.entity.User;
+//import com.camp.reservation.reservation.user.entity.User;
 import com.camp.reservation.reservation.room.entity.Room;
 
 import jakarta.persistence.*;
@@ -24,9 +24,15 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
+
+    @Column(nullable = false)
+    private String userName;
+
+    @Column(nullable = false)
+    private String userFaculty;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
@@ -58,8 +64,9 @@ public class Reservation {
     private LocalDate lastModifiedDate;
 
     @Builder
-    public Reservation(User user, Room room, LocalDate date, LocalTime startTime, LocalTime endTime, int capacity, String groupname, String purpose) {
-        this.user = user;
+    public Reservation(String userName, String userFaculty, Room room, LocalDate date, LocalTime startTime, LocalTime endTime, int capacity, String groupname, String purpose) {
+        this.userName = userName;
+        this.userFaculty = userFaculty;
         this.room = room;
         this.date = date;
         this.startTime = startTime;
@@ -73,7 +80,8 @@ public class Reservation {
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
-                ", user=" + user +
+                ", user=" + userName +
+                ", userFaculty=" + userFaculty +
                 ", room=" + room +
                 ", date=" + date +
                 ", startTime=" + startTime +
