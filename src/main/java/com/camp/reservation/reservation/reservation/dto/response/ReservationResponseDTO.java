@@ -10,7 +10,8 @@ import java.time.LocalTime;
 @Setter
 public class ReservationResponseDTO {
     private Long id;
-    private Long userId;
+    private String userName;
+    private String userFaculty;
     private Long roomId;
     private LocalDate date;
     private LocalTime startTime;

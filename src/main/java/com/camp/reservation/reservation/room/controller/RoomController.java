@@ -1,6 +1,6 @@
 package com.camp.reservation.reservation.room.controller;
 
-import com.camp.reservation.reservation.room.dto.request.RoomAvailabilityRequestListDTO;
+import com.camp.reservation.reservation.room.dto.request.RoomAvailabilityRequestDTO;
 import com.camp.reservation.reservation.room.dto.response.RoomResponseDTO;
 import com.camp.reservation.reservation.room.entity.Room;
 import com.camp.reservation.reservation.room.service.RoomService;
@@ -19,11 +19,9 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping("/available")
-    public List<RoomResponseDTO> findAvailableRooms(@RequestBody RoomAvailabilityRequestListDTO requestList) {
-        List<Room> availableRooms = roomService.findAvailableRooms(requestList.getRequests());
-        return availableRooms.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<Room>> findAvailableRooms(@RequestBody RoomAvailabilityRequestDTO requestDTO) {
+        List<Room> availableRooms = roomService.findAvailableRooms(requestDTO);
+        return ResponseEntity.ok(availableRooms);
     }
 
     @GetMapping
@@ -32,7 +30,7 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<RoomResponseDTO> getRoomById(@PathVariable Long roomId) {
+    public ResponseEntity<RoomResponseDTO> getRoomById(@PathVariable("roomId") Long roomId) {
         Optional<Room> roomOptional = roomService.findRoomById(roomId);
         return roomOptional.map(room -> ResponseEntity.ok(convertToDTO(room)))
                 .orElseGet(() -> ResponseEntity.notFound().build());

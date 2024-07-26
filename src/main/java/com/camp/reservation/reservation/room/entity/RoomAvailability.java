@@ -24,19 +24,19 @@ public class RoomAvailability {
     private Room room;
 
     @Column(nullable = false)
-    private LocalDate availableDate;
+    private LocalDate date;
 
     @Column(nullable = false)
-    private LocalTime availableStartTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private LocalTime availableEndTime;
+    private LocalTime endTime;
 
     @Builder
-    public RoomAvailability(Room room, LocalDate availableDate, LocalTime availableStartTime, LocalTime availableEndTime) {
+    public RoomAvailability(Room room, LocalDate date, LocalTime startTime, LocalTime endTime) {
         this.room = room;
-        this.availableDate = availableDate;
-        this.availableStartTime = availableStartTime;
-        this.availableEndTime = availableEndTime;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }

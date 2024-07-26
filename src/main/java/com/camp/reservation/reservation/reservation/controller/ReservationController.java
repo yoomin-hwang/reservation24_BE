@@ -4,12 +4,14 @@ import com.camp.reservation.reservation.reservation.dto.request.ReservationReque
 import com.camp.reservation.reservation.reservation.dto.response.ReservationResponseDTO;
 import com.camp.reservation.reservation.reservation.entity.Reservation;
 import com.camp.reservation.reservation.reservation.service.ReservationService;
-import com.camp.reservation.reservation.user.entity.User;
-import com.camp.reservation.reservation.user.repository.UserRepository;
+//import com.camp.reservation.reservation.user.entity.User;
+//import com.camp.reservation.reservation.user.repository.UserRepository;
 import com.camp.reservation.reservation.room.entity.Room;
 import com.camp.reservation.reservation.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,20 +23,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationController {
     private final ReservationService reservationService;
-    private final UserRepository userRepository;
     private final RoomRepository roomRepository;
 
     @PostMapping
     public ResponseEntity<ReservationResponseDTO> createReservation(@RequestBody ReservationRequestDTO requestDTO) {
-        Optional<User> userOptional = userRepository.findById(requestDTO.getUserId());
         Optional<Room> roomOptional = roomRepository.findById(requestDTO.getRoomId());
 
-        if (userOptional.isEmpty() || roomOptional.isEmpty()) {
+        if (roomOptional.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-
         Reservation reservation = Reservation.builder()
-                .user(userOptional.get())
+                .userName(requestDTO.getUserName())
+                .userFaculty(requestDTO.getUserFaculty())
                 .room(roomOptional.get())
                 .date(requestDTO.getDate())
                 .startTime(requestDTO.getStartTime())
@@ -46,6 +46,16 @@ public class ReservationController {
 
         Reservation savedReservation = reservationService.createReservation(reservation);
         return ResponseEntity.ok(convertToDTO(savedReservation));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest().body("Invalid JSON: " + ex.getMessage());
     }
 
     @GetMapping("/board")
@@ -73,7 +83,8 @@ public class ReservationController {
     private ReservationResponseDTO convertToDTO(Reservation reservation) {
         ReservationResponseDTO dto = new ReservationResponseDTO();
         dto.setId(reservation.getId());
-        dto.setUserId(reservation.getUser().getId());
+        dto.setUserName(reservation.getUserName());
+        dto.setUserFaculty(reservation.getUserFaculty());
         dto.setRoomId(reservation.getRoom().getId());
         dto.setDate(reservation.getDate());
         dto.setStartTime(reservation.getStartTime());
